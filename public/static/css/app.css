@@ -1,0 +1,59 @@
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    font-family: "Poppins", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#credit-no {
+    font-family: "Montserrat", "sans-serif";
+    font-weight: 200;
+    font-style: normal;
+}
+
+#credit-name {
+    font-family: "Montserrat", "sans-serif";
+    font-weight: 500;
+    font-style: normal;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.no-scrollbar {
+    scrollbar-width: none;
+}
+
+.custom-select {
+    margin-top: 0.25rem;
+    /* mt-1 */
+    width: 100%;
+    /* w-full */
+    padding: 0.5rem 1rem;
+    /* px-4 py-2 */
+    border: 1px solid #d1d5db;
+    /* border border-gray-300 */
+    border-radius: 0.5rem;
+    /* rounded-lg */
+    outline: none;
+    /* focus:outline-none */
+    transition: box-shadow 0.2s, border-color 0.2s;
+    /* smooth transition */
+}
+
+.custom-select:focus {
+    box-shadow: 0 0 0 2px #3b82f6;
+    /* focus:ring-2 focus:ring-blue-500 */
+    border-color: #3b82f6;
+    /* focus:border-blue-500 */
+}

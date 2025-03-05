@@ -1,0 +1,128 @@
+<x-admin-layout>
+    <div class="pemesananList">
+        <div
+            class="nav sticky top-0 right-0 bg-white p-4 rounded-lg mr-4 mt-4 shadow-md flex justify-between items-center z-0">
+            <h1 class="text-gray-800 font-bold">Pemesanan List</h1>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="bg-red-600 rounded-md px-4 py-2 text-center text-white font-bold">
+                    Logout
+                </button>
+            </form>
+        </div>
+
+        <div class="flex items-center gap-6 my-4">
+            <a href="{{ route('pemesanan.create') }}" class="font-bold bg-blue-600 px-4 py-2 rounded-md text-white">Tambah
+                Form</a>
+            <form action="{{ route('pemesanan.index') }}" method="GET" class="flex items-center rounded-lg gap-2">
+                <select name="pengguna" id="pengguna" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    @foreach ($pengguna as $item)
+                        <option value="{{ $item->id_pengguna }}"
+                            {{ old('id_pengguna') == $item->id_pengguna ? 'selected' : '' }}>{{ $item->nama }} -
+                            {{ $item->email }}</option>
+                    @endforeach
+                </select>
+                <button type="submit" class="px-6 py-2 rounded-lg hover:bg-blue-600 hover:text-white font-bold">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+        <table class="table-auto w-full mt-4 bg-white rounded-lg shadow-md overflow-x-scroll">
+            <thead class="bg-gray-100">
+                <tr class="text-left">
+                    <th class="px-4 py-2 border-b font-bold text-gray-800">Id</th>
+                    <th class="px-4 py-2 border-b font-bold text-gray-800">Nama</th>
+                    <th class="px-4 py-2 border-b font-bold text-gray-800">Rute</th>
+                    <th class="px-4 py-2 border-b font-bold text-gray-800">Nomor</th>
+                    <th class="px-4 py-2 border-b font-bold text-gray-800">Tanggal Pemesanan</th>
+                    <th class="px-4 py-2 border-b font-bold text-gray-800">Status</th>
+                    <th class="px-4 py-2 border-b font-bold text-gray-800">Details</th>
+                    <th class="px-4 py-2 border-b font-bold text-gray-800">Action</th>
+                </tr>
+            </thead>
+            <tbody class="whitespace-nowrap">
+                @if ($pemesanan && $pemesanan->count() > 0)
+                    @php
+                        $no = 1;
+                    @endphp
+                    @foreach ($pemesanan as $data)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 border-b text-gray-700">{{ $no++ }}</td>
+                            <td class="px-4 py-3 border-b text-gray-700"><span class="font-bold">{{ $data->nama_maskapai }}</span> {{$data->nomor_penerbangan }}</td>
+                            <td class="px-4 py-3 border-b text-gray-700">{{ $data->email }}</td>
+                            <td class="px-4 py-3 border-b text-gray-700">{{ $data->nomor_telepon }}</td>
+                            <td class="px-4 py-3 border-b text-gray-700">{{ date('D, d M Y H:i:s', strtotime($data->tanggal_pemesanan)) }}</td>
+                            <td class="px-4 py-3 border-b text-white">
+                                @if ($data->status == 'Pending')
+                                    <span
+                                        class="bg-blue-700/90 border border-blue-700 rounded-full px-2">{{ $data->status }}</span>
+                                @endif
+                                @if ($data->status == 'Cancelled')
+                                    <span
+                                        class="bg-red-600/90 border border-red-600 rounded-full px-2">{{ $data->status }}</span>
+                                @endif
+                                @if ($data->status == 'Booking')
+                                    <span
+                                        class="bg-orange-600/90 border border-orange-600 rounded-full px-2">{{ $data->status }}</span>
+                                @endif
+                                @if ($data->status == 'Confirmed')
+                                    <span
+                                        class="bg-green-600/90 border border-green-600 rounded-full px-2">{{ $data->status }}</span>
+                                @endif
+                            </td>
+
+                            <td class="px-4 py-3 border-b text-gray-700">
+                                <a href="{{ route('detailpemesanan.list', $data->id_pemesanan) }}"
+                                    class="text-blue-600 hover:text-blue-800 font-semibold mr-3">
+                                    Detail
+                                </a>
+                            </td>
+                            <td class="px-4 py-3 space-x-4 border-b text-gray-700 flex items-center justify-center">
+                                @if ($data->status != 'Confirmed')
+                                    <form action="{{ route('pemesanan.confirm', $data->id_pemesanan) }}" method="POST"
+                                        class="inline-block">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit"
+                                            class="text-green-600 hover:text-green-800 font-semibold">
+                                            Confirm
+                                        </button>
+                                    </form>
+                                @endif
+
+                                {{-- <a href="{{ route('pemesanan.show', $data->id_pemesanan) }}"
+                                    class="text-blue-600 hover:text-blue-800 font-semibold">
+                                    Edit
+                                </a> --}}
+
+                                <form action="{{ route('pemesanan.destroy', $data->id_pemesanan) }}" method="POST"
+                                    class="inline-block"
+                                    onsubmit="return confirm('Yakin ingin menghapus Pemesanan ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    <div class="flex items-center p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
+                        <svg class="w-5 h-5 mr-2 text-red-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M8.257 3.099c.366-.74 1.43-.74 1.796 0l6.348 12.857c.334.675-.126 1.443-.898 1.443H2.807c-.772 0-1.232-.768-.898-1.443L8.257 3.1zM9 13a1 1 0 112 0 1 1 0 01-2 0zm.25-4.75a.75.75 0 10-1.5 0v2.5a.75.75 0 001.5 0v-2.5z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="font-medium mr-2">Warning:</span>Data Pemesanan tidak tersedia.
+                    </div>
+                @endif
+            </tbody>
+        </table>
+        <div>
+            {{ $pemesanan->links() }}
+        </div>
+    </div>
+</x-admin-layout>
